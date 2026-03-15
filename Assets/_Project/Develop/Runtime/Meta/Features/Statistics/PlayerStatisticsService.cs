@@ -1,12 +1,15 @@
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.Data;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider;
+using Assets._Project.Develop.Runtime.Utilities.Reactive;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Assets._Project.Develop.Runtime.Meta.Features.Statistics
 {
     public class PlayerStatisticsService : IDataReader<PlayerData>, IDataWriter<PlayerData>
     {
-        private int _winCount;
-        private int _lossCount;
+        private Dictionary<StatisticsItemTypes, ReactiveVariable<int>> _statistics = new();
 
         public PlayerStatisticsService(PlayerDataProvider playerDataProvider)
         {
@@ -14,30 +17,39 @@ namespace Assets._Project.Develop.Runtime.Meta.Features.Statistics
             playerDataProvider.RegisterReader(this);
         }
 
-        public int GetWinCount() => _winCount;
+        public List<StatisticsItemTypes> AvailableStatisticsItems => _statistics.Keys.ToList();
 
-        public int GetLossCount() => _lossCount;
+        public IReadOnlyVariable<int> GetStats(StatisticsItemTypes type) => _statistics[type];
 
-        public void AddWin() => _winCount++;
-
-        public void AddLoss() => _lossCount++;
+        public void Add(StatisticsItemTypes type, int amount = 1) => _statistics[type].Value += amount;
 
         public void ReadFrom(PlayerData data)
         {
-            _winCount = data.WinCount;
-            _lossCount = data.LossCount;
+            foreach (var statItem in data.StatsData)
+            {
+                if (_statistics.ContainsKey(statItem.Key))
+                    _statistics[statItem.Key].Value = statItem.Value;
+                else
+                    _statistics.Add(statItem.Key, new ReactiveVariable<int>(statItem.Value));
+            }
         }
 
         public void WriteTo(PlayerData data)
         {
-            data.WinCount = _winCount;
-            data.LossCount = _lossCount;
+            foreach (var statItem in _statistics)
+            {
+                if (data.StatsData.ContainsKey(statItem.Key))
+                    data.StatsData[statItem.Key] = statItem.Value.Value;
+                else
+                    data.StatsData.Add(statItem.Key, statItem.Value.Value);
+            }
         }
 
         public void Reset()
         {
-            _winCount = 0;
-            _lossCount = 0;
+            foreach (StatisticsItemTypes statItem in Enum.GetValues(typeof(StatisticsItemTypes)))
+                if (_statistics.TryGetValue(statItem, out var value))
+                    value.Value = 0;
         }
     }
 }

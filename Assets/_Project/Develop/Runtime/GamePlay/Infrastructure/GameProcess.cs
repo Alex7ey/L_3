@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEngine.InputSystem;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider;
@@ -15,8 +14,6 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
 {
     public class GameProcess
     {
-        private bool _isRunning;
-        private int _currentCharIndex;
         private ICombination _combination;
         private RewardsAndCostsConfig _rewardsAndCostsConfig;
 
@@ -28,7 +25,7 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
         private SceneSwitcherService _sceneSwitcherService;
         private ConfigsProviderService _configsProviderService;
         private PlayerStatisticsService _playerStatisticsService;
-
+        private UserInputHandlerService _userInputHandlerService;
 
         public GameProcess(GameplayInputArgs gameplayInputArgs,
             SceneSwitcherService sceneSwitcherService,
@@ -37,7 +34,8 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
             WalletService walletService,
             PlayerDataProvider playerDataProvider,
             PlayerStatisticsService playerStatisticsService,
-            ConfigsProviderService configsProviderService)
+            ConfigsProviderService configsProviderService,
+            UserInputHandlerService userInputHandlerService)
         {
             _gameplayInputArgs = gameplayInputArgs;
             _sceneSwitcherService = sceneSwitcherService;
@@ -47,82 +45,50 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
             _playerDataProvider = playerDataProvider;
             _playerStatisticsService = playerStatisticsService;
             _configsProviderService = configsProviderService;
+            _userInputHandlerService = userInputHandlerService;
         }
 
         public void Initialize()
         {
-            Keyboard.current.onTextInput += ProcessInput;
-
             _combination = _combinationFactory.CreateCombination(_gameplayInputArgs.GameMode);
+
+            _userInputHandlerService.SetString(_combination.Value);
+
             _rewardsAndCostsConfig = _configsProviderService.GetConfig<RewardsAndCostsConfig>();
-            _isRunning = true;
 
-            ShowGameInfo();
+            _userInputHandlerService.WinGame += WinGameProcess;
+            _userInputHandlerService.LossGame += DefeatGameProcess;
         }
 
-        public void Run() => _isRunning = true;
-
-        public void ProcessInput(char inputChar)
+        private void WinGameProcess()
         {
-            if (_isRunning == false)
-                return;
-
-            if (IsCorrectChar(inputChar))
-            {
-                _currentCharIndex++;
-
-                if (_currentCharIndex >= _combination.Value.Length)
-                    _coroutinesPerformer.StartPerform(WinGameProcess());
-
-                return;
-            }
-
-            _coroutinesPerformer.StartPerform(DefeatGameProcess());
-        }
-
-        public bool IsCorrectChar(char inputChar)
-        {
-            if (inputChar.ToString().ToUpper() == _combination.Value[_currentCharIndex].ToString().ToUpper())
-                return true;
-
-            return false;
-        }
-
-        private IEnumerator WinGameProcess()
-        {
-            Debug.Log("Ты победил!\nНажмите Space чтобы продолжить");
- 
             _walletService.Add(_rewardsAndCostsConfig.Currency, _rewardsAndCostsConfig.WinReward);
-            _playerStatisticsService.AddWin();
+            _playerStatisticsService.Add(StatisticsItemTypes.Win);
 
-            yield return Reset();
-        }
+            _coroutinesPerformer.StartPerform(Reset());
+        } 
 
-        private IEnumerator DefeatGameProcess()
+        private void DefeatGameProcess()
         {
-            Debug.Log("Ты проиграл!\nНажмите Space чтобы продолжить");
-
             if (_walletService.Enough(_rewardsAndCostsConfig.Currency, _rewardsAndCostsConfig.DefeatCost))
                 _walletService.Spend(_rewardsAndCostsConfig.Currency, _rewardsAndCostsConfig.DefeatCost);
 
-            _playerStatisticsService.AddLoss();
+            _playerStatisticsService.Add(StatisticsItemTypes.Loss);
 
-            yield return Reset();
+            _coroutinesPerformer.StartPerform(Reset());
         }
 
         private IEnumerator Reset()
         {
-            _isRunning = false;
-            _currentCharIndex = 0;
+            _userInputHandlerService.WinGame -= WinGameProcess;
+            _userInputHandlerService.LossGame -= DefeatGameProcess;
 
-            Keyboard.current.onTextInput -= ProcessInput;
+            _userInputHandlerService.Dispose();
 
             yield return _playerDataProvider.Save();
             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
 
             _coroutinesPerformer.StartPerform(_sceneSwitcherService.ProcessSwitchTo(Scenes.MainMenu, _gameplayInputArgs));
         }
-
-        private void ShowGameInfo() => Debug.Log($"Для победы введите без ошибок {_combination.Value}");
     }
 }

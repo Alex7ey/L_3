@@ -22,13 +22,12 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
 
             MainMenuContextRegistration.Process(_container);
 
-            container.Initialize(); 
+            container.Initialize();
         }
 
         public override IEnumerator Initialize()
         {
             _metaProcess = _container.Resolve<MetaProcess>();
-
             _metaProcess.Initialize();
 
             yield return _container.Resolve<ConfigsProviderService>().LoadAsync();

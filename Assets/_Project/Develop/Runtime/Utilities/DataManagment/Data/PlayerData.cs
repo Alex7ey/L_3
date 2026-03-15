@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 
 namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.Data
@@ -7,8 +8,6 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.Data
     {
         public Dictionary<CurrencyTypes, int> WalletData;
 
-        public int WinCount;
-
-        public int LossCount;
+        public Dictionary<StatisticsItemTypes, int> StatsData;
     }
 }

@@ -16,6 +16,8 @@ using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using Assets._Project.Develop.Runtime.UI;
+using Assets._Project.Develop.Runtime.UI.Popups;
 
 namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 {
@@ -23,11 +25,13 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
     {
         public static void Process(DIContainer container)
         {
+            container.RegisterAsSingle(CreateViewFactory);
             container.RegisterAsSingle(CreateSceneLoaderService);
+            container.RegisterAsSingle(CreatePlayerDataProvider);
             container.RegisterAsSingle(CreateResourceAssetsLoader);
             container.RegisterAsSingle(CreateSceneSwitcherService);
             container.RegisterAsSingle(CreateConfigsProviderService);
-            container.RegisterAsSingle(CreatePlayerDataProvider);
+            container.RegisterAsSingle(CreateProjectPresentersFactory);
 
             container.RegisterAsSingle<ILoadingScreen>(CreateLoadingScreen);
             container.RegisterAsSingle<ISaveLoadService>(CreateSaveLoadService);
@@ -95,5 +99,10 @@ namespace Assets._Project.Develop.Runtime.Infrastructure.EntryPoint
 
         private static PlayerDataProvider CreatePlayerDataProvider(DIContainer container) => new PlayerDataProvider(container.Resolve<ISaveLoadService>(), container.Resolve<ConfigsProviderService>());
 
+        private static ViewsFactory CreateViewFactory(DIContainer container) => new ViewsFactory(container.Resolve<ResourcesAssetsLoader>());
+
+        private static ProjectPresentersFactory CreateProjectPresentersFactory(DIContainer container)
+            => new ProjectPresentersFactory(container);
     }
+
 }

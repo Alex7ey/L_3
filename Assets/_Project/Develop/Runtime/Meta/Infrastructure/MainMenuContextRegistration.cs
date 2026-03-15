@@ -2,9 +2,14 @@
 using Assets._Project.Develop.Runtime.Meta.Features.Combinations;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using Assets._Project.Develop.Runtime.UI;
+using Assets._Project.Develop.Runtime.UI.Popups;
+using Assets._Project.Develop.Runtime.UI.UIRoot;
+using Assets._Project.Develop.Runtime.Utilities.AssetsLoader;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider;
+using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
 {
@@ -12,8 +17,13 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
     {
         public static void Process(DIContainer container)
         {
-            container.RegisterAsSingle(CreateCombinationSelectorService);
             container.RegisterAsSingle(CreateMetaProcess);
+            container.RegisterAsSingle(CreateMainMenuPopupService);
+            container.RegisterAsSingle(CreateMainMenuPresentersFactory);
+            container.RegisterAsSingle(CreateCombinationSelectorService);
+
+            container.RegisterAsSingle(CreateMainMenuUIRoot).NonLazy();
+            container.RegisterAsSingle(CreateMainMenuScreenPresenter).NonLazy();
         }
 
         private static CombinationSelector CreateCombinationSelectorService(DIContainer container) => new CombinationSelector();
@@ -21,6 +31,41 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
         private static MetaProcess CreateMetaProcess(DIContainer container)
         {
             return new MetaProcess(container.Resolve<WalletService>(), container.Resolve<PlayerStatisticsService>(), new CombinationSelector(), container.Resolve<ICoroutinesPerformer>(), container.Resolve<PlayerDataProvider>(), container.Resolve<ConfigsProviderService>());
+        }
+
+        private static MainMenuPresentersFactory CreateMainMenuPresentersFactory(DIContainer container) => new MainMenuPresentersFactory(container);
+    
+        private static MainMenuUIRoot CreateMainMenuUIRoot(DIContainer container)
+        {
+            ResourcesAssetsLoader resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
+
+            MainMenuUIRoot mainMenuUIRootPrefab = resourcesAssetsLoader
+                .Load<MainMenuUIRoot>("UI/MainMenuUIRoot");
+
+            return Object.Instantiate(mainMenuUIRootPrefab);
+        }
+
+        private static MainMenuScreenPresenter CreateMainMenuScreenPresenter(DIContainer container)
+        {
+            MainMenuUIRoot uiRoot = container.Resolve<MainMenuUIRoot>();
+
+            MainMenuScreenView view = container
+                .Resolve<ViewsFactory>()
+                .Create<MainMenuScreenView>(ViewIDs.MainMenuScreen, uiRoot.HUDLayer);
+
+            MainMenuScreenPresenter presenter = container
+                .Resolve<MainMenuPresentersFactory>()
+                .CreateMainMenuScreenPresenter(view);
+
+            return presenter;
+        }
+
+        private static MainMenuPopupService CreateMainMenuPopupService(DIContainer c)
+        {
+            return new MainMenuPopupService(
+                c.Resolve<ViewsFactory>(),
+                c.Resolve<ProjectPresentersFactory>(),
+                c.Resolve<MainMenuUIRoot>());
         }
     }
 }

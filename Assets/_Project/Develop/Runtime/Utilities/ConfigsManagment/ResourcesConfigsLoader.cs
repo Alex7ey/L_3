@@ -15,7 +15,10 @@ namespace Assets._Project.Develop.Runtime.Utilities.ConfigsManagment
         {
             {typeof(CombinationConfig), "Configs/CombinationConfig" },
             {typeof(StartWalletConfig), "Configs/StartWalletConfig" },
-            {typeof(RewardsAndCostsConfig),"Configs/RewardsAndCostsConfig"}
+            {typeof(RewardsAndCostsConfig),"Configs/RewardsAndCostsConfig"},
+            {typeof(CurrencyIconsConfig),"Configs/CurrencyIconsConfig"},
+            {typeof(StatisticsConfig),"Configs/StatisticsConfig"},
+            {typeof(StatisticsIconsConfig),"Configs/StatisticsIconsConfig"},
         };
 
         public ResourcesConfigsLoader(ResourcesAssetsLoader resources)

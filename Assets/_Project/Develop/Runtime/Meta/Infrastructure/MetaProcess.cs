@@ -97,8 +97,8 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
         private void ShowStatsOnKeyPress()
         {
             Debug.Log(
-                $"Побед - {_playerStatisticService.GetWinCount()}, " +
-                $"Поражений - {_playerStatisticService.GetLossCount()}, " +
+                $"Побед - {_playerStatisticService.GetStats(StatisticsItemTypes.Win).Value}, " +
+                $"Поражений - {_playerStatisticService.GetStats(StatisticsItemTypes.Loss).Value}, " +
                 $"Золото - {_walletService.GetCurrency(CurrencyTypes.Gold).Value}"
                 );
         }

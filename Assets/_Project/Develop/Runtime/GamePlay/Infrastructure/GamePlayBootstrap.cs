@@ -3,6 +3,7 @@ using System.Collections;
 using Assets._Project.Develop.Runtime.Infrastructure;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
 using Assets._Project.Develop.Runtime.Utilities.SceneManagment;
+using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
 {
@@ -15,10 +16,11 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
         {
             if (inputSceneArgs is not GameplayInputArgs gameplayInputArgs)
                 throw new ArgumentException($"{nameof(inputSceneArgs)} is not match with {typeof(GameplayInputArgs)} type");
-
+         
             GameplayContextRegistration.Process(container, gameplayInputArgs);
            
             _container = container;
+            _container.Initialize();
         }
 
         public override IEnumerator Initialize()
@@ -29,6 +31,8 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
             yield break;
         }
 
-        public override void Run() => _gameProcess.Run();
+        public override void Run()
+        { }
+
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Assets._Project.Develop.Runtime.Configs;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.Data;
@@ -21,8 +22,7 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider
             return new PlayerData()
             {
                 WalletData = InitializeWalletData(),
-                WinCount = InitializeWinCount(),
-                LossCount = InitializeDefeatCount()
+                StatsData = InitializeStatsData()
             };
         }
 
@@ -38,8 +38,16 @@ namespace Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider
             return walletData;
         }
 
-        private int InitializeWinCount() => 0;
+        private Dictionary<StatisticsItemTypes, int> InitializeStatsData()
+        {
+            Dictionary<StatisticsItemTypes, int> statsData = new();
 
-        private int InitializeDefeatCount() => 0;   
+            StatisticsConfig statisticsConfig = _configsProviderService.GetConfig<StatisticsConfig>();
+
+            foreach (StatisticsItemTypes statItem in Enum.GetValues(typeof(StatisticsItemTypes)))
+                statsData[statItem] = statisticsConfig.GetValueFor(statItem);
+
+            return statsData;
+        } 
     }
 }
