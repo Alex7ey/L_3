@@ -2,7 +2,7 @@ using Assets._Project.Develop.Runtime.Utilities.Reactive;
 using System;
 using TMPro;
 
-namespace Assets._Project.Develop.Runtime.UI.TextOutput
+namespace Assets._Project.Develop.Runtime.UI.CommonView
 {
     public class TextFieldPresenter : IPresenter
     {

@@ -1,5 +1,3 @@
-using Assets._Project.Develop.Runtime.UI.Popups;
-
 namespace Assets._Project.Develop.Runtime.UI
 {
     public class ViewIDs

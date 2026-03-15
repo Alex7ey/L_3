@@ -1,3 +1,4 @@
+using Assets._Project.Develop.Runtime.UI.Popups.PopupAnimation;
 using DG.Tweening;
 using System;
 using UnityEngine;

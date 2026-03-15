@@ -1,9 +1,10 @@
 using Assets._Project.Develop.Runtime.UI.CommonView;
+using Assets._Project.Develop.Runtime.UI.Popups;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets._Project.Develop.Runtime.UI.Popups
+namespace Assets._Project.Develop.Runtime.UI.MainMenuScreen
 {
     public class ResetStatisticsPopupView : PopupViewBase, IView
     {

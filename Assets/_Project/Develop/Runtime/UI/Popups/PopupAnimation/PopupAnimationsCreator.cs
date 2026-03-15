@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets._Project.Develop.Runtime.UI.Popups
+namespace Assets._Project.Develop.Runtime.UI.Popups.PopupAnimation
 {
     public class PopupAnimationsCreator
     {

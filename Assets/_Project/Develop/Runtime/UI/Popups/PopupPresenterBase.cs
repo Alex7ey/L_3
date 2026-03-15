@@ -2,7 +2,6 @@ using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using DG.Tweening;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets._Project.Develop.Runtime.UI.Popups

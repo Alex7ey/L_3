@@ -1,12 +1,11 @@
 using Assets._Project.Develop.Runtime.Configs;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
-using Assets._Project.Develop.Runtime.UI.UIRoot;
+using Assets._Project.Develop.Runtime.UI.Popups;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider;
-using UnityEngine;
 
-namespace Assets._Project.Develop.Runtime.UI.Popups
+namespace Assets._Project.Develop.Runtime.UI.MainMenuScreen
 {
     public class ResetStatisticsPopupPresenter : PopupPresenterBase, IPresenter
     {
@@ -16,17 +15,19 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
         private CurrencyIconsConfig _currencyIconsConfig;
         private PlayerDataProvider _playerDataProvider;
         private ResetStatisticsPopupView _view;
-  
+        private ICoroutinesPerformer _coroutinesPerformer;
+
         protected override PopupViewBase PopupView => _view;
 
         public ResetStatisticsPopupPresenter(
             WalletService walletService,
             PlayerStatisticsService playerStatisticsService,
             RewardsAndCostsConfig rewardAndCostsConfig,
+            CurrencyIconsConfig currencyIconsConfig,
             PlayerDataProvider playerDataProvider,
             ICoroutinesPerformer coroutinesPerformer,
-            ResetStatisticsPopupView view,
-            CurrencyIconsConfig currencyIconsConfig) : base(coroutinesPerformer)
+            ResetStatisticsPopupView view
+          ) : base(coroutinesPerformer)
         {
             _walletService = walletService;
             _playerStatisticsService = playerStatisticsService;
@@ -34,6 +35,7 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
             _playerDataProvider = playerDataProvider;
             _view = view;
             _currencyIconsConfig = currencyIconsConfig;
+            _coroutinesPerformer = coroutinesPerformer;
         }
 
         public override void Initialize()
@@ -56,10 +58,8 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
             {
                 _walletService.Spend(_rewardAndCostsConfig.Currency, _rewardAndCostsConfig.ResetCost);
                 _playerStatisticsService.Reset();
-                _playerDataProvider.Save();
-
-                // not save!!! xz
+                _coroutinesPerformer.StartPerform(_playerDataProvider.Save());
             }
-        }    
+        }
     }
 }

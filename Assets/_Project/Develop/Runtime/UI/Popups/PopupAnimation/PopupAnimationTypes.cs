@@ -1,4 +1,4 @@
-﻿namespace Assets._Project.Develop.Runtime.UI.Popups
+﻿namespace Assets._Project.Develop.Runtime.UI.Popups.PopupAnimation
 {
     public enum PopupAnimationTypes
     {

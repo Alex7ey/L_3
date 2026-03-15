@@ -1,5 +1,5 @@
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
-using Assets._Project.Develop.Runtime.UI.Popups;
+using Assets._Project.Develop.Runtime.UI.MainMenuScreen;
 
 namespace Assets._Project.Develop.Runtime.UI
 {

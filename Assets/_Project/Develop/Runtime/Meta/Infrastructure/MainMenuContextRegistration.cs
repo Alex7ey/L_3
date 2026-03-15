@@ -3,7 +3,7 @@ using Assets._Project.Develop.Runtime.Meta.Features.Combinations;
 using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
 using Assets._Project.Develop.Runtime.UI;
-using Assets._Project.Develop.Runtime.UI.Popups;
+using Assets._Project.Develop.Runtime.UI.MainMenuScreen;
 using Assets._Project.Develop.Runtime.UI.UIRoot;
 using Assets._Project.Develop.Runtime.Utilities.AssetsLoader;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
@@ -40,7 +40,7 @@ namespace Assets._Project.Develop.Runtime.Meta.Infrastructure
             ResourcesAssetsLoader resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
 
             MainMenuUIRoot mainMenuUIRootPrefab = resourcesAssetsLoader
-                .Load<MainMenuUIRoot>("UI/MainMenuUIRoot");
+                .Load<MainMenuUIRoot>("UI/MainMenu/MainMenuUIRoot");
 
             return Object.Instantiate(mainMenuUIRootPrefab);
         }

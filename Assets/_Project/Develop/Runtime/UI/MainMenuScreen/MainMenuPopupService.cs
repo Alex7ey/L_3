@@ -1,7 +1,8 @@
+using Assets._Project.Develop.Runtime.UI.Popups;
 using Assets._Project.Develop.Runtime.UI.UIRoot;
 using UnityEngine;
 
-namespace Assets._Project.Develop.Runtime.UI.Popups
+namespace Assets._Project.Develop.Runtime.UI.MainMenuScreen
 {
     public class MainMenuPopupService : PopupService
     {

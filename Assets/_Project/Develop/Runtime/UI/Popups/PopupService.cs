@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Assets._Project.Develop.Runtime.UI.MainMenuScreen;
 
 namespace Assets._Project.Develop.Runtime.UI.Popups
 {
@@ -26,12 +27,12 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
         {
             ResetStatisticsPopupView view = ViewsFactory.Create<ResetStatisticsPopupView>(ViewIDs.ResetStatisticsPopupView, PopupLayer);
 
-            ResetStatisticsPopupPresenter popup = _presentersFactory.CreateResetStatisticsButtonPresenter(view);
+            ResetStatisticsPopupPresenter popup = _presentersFactory.CreateResetStatisticsPopupPresenter(view);
 
             OnPopupCreated(popup, view, closedCallback);
 
             return popup;
-        }   
+        }
 
         public void ClosePopup(PopupPresenterBase popup)
         {
@@ -57,10 +58,7 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
             _presenterToInfo.Clear();
         }
 
-        protected void OnPopupCreated(
-            PopupPresenterBase popup,
-            PopupViewBase view,
-            Action closedCallback = null)
+        protected void OnPopupCreated(PopupPresenterBase popup, PopupViewBase view, Action closedCallback = null)
         {
             PopupInfo popupInfo = new PopupInfo(view, closedCallback);
 
@@ -88,7 +86,5 @@ namespace Assets._Project.Develop.Runtime.UI.Popups
             public PopupViewBase View { get; }
             public Action ClosedCallback { get; }
         }
-
-
     }
 }

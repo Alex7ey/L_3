@@ -55,7 +55,7 @@ namespace Assets._Project.Develop.Runtime.GamePlay.Infrastructure
             ResourcesAssetsLoader resourcesAssetsLoader = container.Resolve<ResourcesAssetsLoader>();
 
             GamePlayUIRoot gamePlayUIRootPrefab = resourcesAssetsLoader
-                .Load<GamePlayUIRoot>("UI/GamePlayUIRoot");
+                .Load<GamePlayUIRoot>("UI/GamePlay/GamePlayUIRoot");
 
             return Object.Instantiate(gamePlayUIRootPrefab);
         }

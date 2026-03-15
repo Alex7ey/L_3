@@ -1,14 +1,14 @@
 using Assets._Project.Develop.Runtime.Configs;
 using Assets._Project.Develop.Runtime.Infrastructure.DI;
-using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
-using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using TMPro;
 using Assets._Project.Develop.Runtime.UI.CommonView;
-using Assets._Project.Develop.Runtime.UI.Popups;
-using Assets._Project.Develop.Runtime.UI.UIRoot;
+using Assets._Project.Develop.Runtime.UI.MainMenuScreen;
+using Assets._Project.Develop.Runtime.Utilities.Reactive;
+using Assets._Project.Develop.Runtime.Meta.Features.Wallet;
+using Assets._Project.Develop.Runtime.Meta.Features.Statistics;
 using Assets._Project.Develop.Runtime.Utilities.ConfigsManagment;
 using Assets._Project.Develop.Runtime.Utilities.CoroutinesManagment;
 using Assets._Project.Develop.Runtime.Utilities.DataManagment.DataProvider;
-using Assets._Project.Develop.Runtime.Utilities.Reactive;
 
 namespace Assets._Project.Develop.Runtime.UI
 {
@@ -38,17 +38,19 @@ namespace Assets._Project.Develop.Runtime.UI
             return new StatisticsItemPresenter(value, statisticsType, _container.Resolve<ConfigsProviderService>().GetConfig<StatisticsIconsConfig>(), view);
         }
 
-        public ResetStatisticsPopupPresenter CreateResetStatisticsButtonPresenter(ResetStatisticsPopupView view)
+        public ResetStatisticsPopupPresenter CreateResetStatisticsPopupPresenter(ResetStatisticsPopupView view)
         {
             return new ResetStatisticsPopupPresenter(
-                _container.Resolve<WalletService>(), 
-                _container.Resolve<PlayerStatisticsService>(), 
-                _container.Resolve<ConfigsProviderService>().GetConfig<RewardsAndCostsConfig>(),               
-                _container.Resolve <PlayerDataProvider>(),
+                _container.Resolve<WalletService>(),
+                _container.Resolve<PlayerStatisticsService>(),
+                _container.Resolve<ConfigsProviderService>().GetConfig<RewardsAndCostsConfig>(),
+                 _container.Resolve<ConfigsProviderService>().GetConfig<CurrencyIconsConfig>(),
+                _container.Resolve<PlayerDataProvider>(),
                 _container.Resolve<ICoroutinesPerformer>(),
-                view,
-                _container.Resolve<ConfigsProviderService>().GetConfig<CurrencyIconsConfig>())
-            ;
+                view
+               );
         }
+
+        public TextFieldPresenter CreateTextFieldPresenter(IReadOnlyVariable<string> text, TextMeshProUGUI view) => new TextFieldPresenter(text, view);
     }
 }
